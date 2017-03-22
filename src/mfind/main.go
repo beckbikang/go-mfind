@@ -27,7 +27,7 @@ func main() {
 
 	//要查找的文件名
 	var filename string
-
+	flag.StringVar(&filename, "filename", "", "file name")
 	flag.Parse()
 	fmt.Println(dirpath, filename)
 	if len(dirpath) > 0 && len(filename) > 0 {
