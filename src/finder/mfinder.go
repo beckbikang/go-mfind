@@ -9,17 +9,22 @@ import (
 )
 
 type Mfinder struct {
-	DirPath     string   //查找的路径
-	FindName    string   //查找的文件名中含有的字段
-	MaxFileSize uint64   //文件的最大
-	MinFileSize uint64   //文件的最小
-	listFiles   []string //文件列表
-	HasDir      bool     //是否包含dir
+	DirPath        string   //查找的路径
+	FindName       string   //查找的文件名中含有的字段
+	MaxFileSize    uint64   //文件的最大
+	MinFileSize    uint64   //文件的最小
+	listFiles      []string //文件列表
+	IsOnlyFindType int      //查找 1目录 2文件
+
 }
+
+var PthSep = string(os.PathSeparator)
 
 //初始化
 func NewMfinderSimple(dirpath, filename string) *Mfinder {
-	return &Mfinder{DirPath: dirpath, FindName: filename, HasDir: true}
+	//忽略大小写
+	filename = strings.ToLower(filename)
+	return &Mfinder{DirPath: dirpath, FindName: filename}
 }
 
 //获取列表
@@ -33,17 +38,19 @@ func (mf *Mfinder) ListDir(dirPth string) (err error) {
 	if err != nil {
 		return err
 	}
-	PthSep := string(os.PathSeparator)
-
 	for _, filename := range dirSlice {
 		curFile := dirPth + PthSep + filename.Name()
 		if filename.IsDir() {
-			if mf.HasDir {
+			//全部查找或者只查找目录才放进去
+			if (mf.IsOnlyFindType == 0) || (mf.IsOnlyFindType) == 2 {
 				mf.listFiles = append(mf.listFiles, curFile)
 			}
 			mf.ListDir(curFile)
 		} else {
-			mf.listFiles = append(mf.listFiles)
+			//全部查找或者只查找文件才放进去
+			if (mf.IsOnlyFindType == 0) || (mf.IsOnlyFindType) == 1 {
+				mf.listFiles = append(mf.listFiles, curFile)
+			}
 		}
 	}
 	return nil
@@ -51,9 +58,9 @@ func (mf *Mfinder) ListDir(dirPth string) (err error) {
 
 //查找符合要求的文件
 func (mf *Mfinder) GetRet(list []string, aChan chan []string) {
-	aSlice := make([]string, 100)
+	aSlice := make([]string, 1, 100)
 	for _, v := range list {
-		if mf.checkFindRet(v) {
+		if mf.checkFindRet(v) == true {
 			aSlice = append(aSlice, v)
 		}
 	}
@@ -63,8 +70,16 @@ func (mf *Mfinder) GetRet(list []string, aChan chan []string) {
 //是否含有子串
 func (mf *Mfinder) checkFindRet(path string) bool {
 	flag := false
-	flag = strings.Contains(path, mf.FindName)
 
+	path = strings.ToLower(path)
+	if mf.IsOnlyFindType == 0 || mf.IsOnlyFindType == 2 {
+		flag = strings.Contains(path, mf.FindName)
+	} else {
+		//只查找文件名
+		AIndex := strings.LastIndex(path, PthSep)
+		fileName := path[(AIndex + 1):]
+		flag = strings.Contains(fileName, mf.FindName)
+	}
 	return flag
 }
 
@@ -96,15 +111,18 @@ func (mf *Mfinder) Run() {
 		go mf.GetRet(newSlice[i], chanArr[i])
 	}
 	//打印找到的文件
-	strList := make([]string, 30)
+	strList := make([]string, 1, 100)
+	fmt.Println("\t#####start show result ####")
 	for _, v := range chanArr {
 		values := <-v
 		for _, v1 := range values {
 			if len(v1) == 0 {
 				continue
 			}
-			fmt.Println(v1)
+			fmt.Println("\t\t", v1)
 			strList = append(strList, v1)
 		}
 	}
+	fmt.Println("\t#####end show result ####")
+	fmt.Printf("\n#########wtotal find %d result\n", len(strList)-1)
 }
