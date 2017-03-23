@@ -6,11 +6,12 @@ a find tool write in golang we can use it find some file
 DONE 
 
 	1 find filename from a dirpath
-
-TODO
-
-	1 just find filename
-	2 just find dirname
-	3 find file by size
-	4 find file by type
-	5 list more file info 
+	2 Ignore case
+	3 just find filename
+	4 just find dirname
+	
+TODO 
+	5 find file by size
+	6 find file by type
+	7 list more file info
+	8 write unittest for every function
