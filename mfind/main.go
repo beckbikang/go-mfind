@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 var Usage = func() {
@@ -32,11 +33,18 @@ func main() {
 	var isOnlyFindType int
 	flag.IntVar(&isOnlyFindType, "isfile", 0, "which type fild 0 all 1 file  2 dir ")
 
+	//查找文件的大小
+	var fileSize string
+	flag.StringVar(&fileSize, "size", "", "file size like +10m +100 -10M -100")
+	fileSize = strings.ToLower(strings.Trim(fileSize, " "))
+
 	flag.Parse()
 	fmt.Printf("\n#########we will find %s  from %s#########\n\n", filename, dirpath)
-	if len(dirpath) > 0 && len(filename) > 0 {
+	if len(dirpath) > 0 {
 		mf := finder.NewMfinderSimple(dirpath, filename)
 		mf.IsOnlyFindType = isOnlyFindType
+		//设置大小
+		mf.SetFileSize(fileSize)
 		mf.Run()
 	} else {
 		Usage()

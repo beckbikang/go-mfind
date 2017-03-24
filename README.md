@@ -1,7 +1,7 @@
 
 a find tool write in golang we can use it find some file
 
-一个简单的文本查找工具，多线程的查找文件
+一个简单的文本查找工具，多协程的查找文件
 
 
 how to use it (如何使用它)
@@ -43,10 +43,12 @@ DONE
 	2 Ignore case
 	3 just find filename
 	4 just find dirname
-	
+	5 find file by size
+
 TODO 
 
-	5 find file by size
-	6 find file by type
-	7 list more file info
-	8 write unittest for every function
+	6 list more file info
+	7 write unittest for every function
+
+
+
