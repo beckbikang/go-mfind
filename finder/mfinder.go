@@ -197,7 +197,7 @@ func (mf *Mfinder) Run() {
 			if mf.showMore {
 				fileInfo, err := os.Stat(v1)
 				if err == nil {
-					fmt.Print("\t", fileInfo.Size()/KbToByte, "k")
+					fmt.Print("\t", fileInfo.Size())
 					if fileInfo.IsDir() {
 						fmt.Print("\t", "dir")
 					} else {
