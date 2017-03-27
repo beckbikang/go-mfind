@@ -41,6 +41,8 @@ func (mf *Mfinder) SetFileSize(fileSize string) {
 	//has k
 	var hasMore int8
 
+	fileSize = strings.ToLower(fileSize)
+
 	if strings.Contains(fileSize, "k") {
 		hasMore = 1
 		fileSize = strings.Replace(fileSize, "k", "", -1)
@@ -67,6 +69,7 @@ func (mf *Mfinder) SetFileSize(fileSize string) {
 	}
 	if isMax {
 		mf.MaxFileSize = fileSizeInt64
+
 	} else {
 		mf.MinFileSize = fileSizeInt64
 	}
@@ -117,7 +120,7 @@ func (mf *Mfinder) ListDir(dirPth string) (err error) {
 func (mf *Mfinder) GetRet(list []string, aChan chan []string) {
 	aSlice := make([]string, 1, 100)
 	for _, v := range list {
-		if mf.checkFindRet(v) == true {
+		if mf.CheckFindRet(v) == true {
 			aSlice = append(aSlice, v)
 		}
 	}
@@ -125,7 +128,7 @@ func (mf *Mfinder) GetRet(list []string, aChan chan []string) {
 }
 
 //是否含有子串
-func (mf *Mfinder) checkFindRet(path string) bool {
+func (mf *Mfinder) CheckFindRet(path string) bool {
 	flag := false
 
 	if len(mf.FindName) == 0 {

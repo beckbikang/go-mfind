@@ -6,6 +6,16 @@ a find tool write in golang we can use it find some file
 
 how to use it (如何使用它)
 
+simple list way to 
+mkdir like this
+	bin
+	pkg
+	src
+		finder
+		mfind
+set you gopath 
+	and go install mfind 
+
 
 just use go to build it ,it don't have other dependence
 
