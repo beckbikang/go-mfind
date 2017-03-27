@@ -54,11 +54,12 @@ DONE
 	3 just find filename
 	4 just find dirname
 	5 find file by size
+	7 write unittest for every function
 
 TODO 
 
 	6 list more file info
-	7 write unittest for every function
+	
 
 
 

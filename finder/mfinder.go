@@ -16,7 +16,7 @@ type Mfinder struct {
 	MinFileSize    int64    //文件的最小
 	listFiles      []string //文件列表
 	IsOnlyFindType int      //查找 1目录 2文件
-
+	showMore       bool
 }
 
 var KbToByte int64 = 1024
@@ -29,7 +29,11 @@ func NewMfinderSimple(dirpath, filename string) *Mfinder {
 	//忽略大小写
 	filename = strings.ToLower(filename)
 
-	return &Mfinder{MaxFileSize: 0, MinFileSize: 0, DirPath: dirpath, FindName: filename}
+	return &Mfinder{showMore: false, MaxFileSize: 0, MinFileSize: 0, DirPath: dirpath, FindName: filename}
+}
+
+func (mf *Mfinder) SetShowMore(showMore bool) {
+	mf.showMore = showMore
 }
 
 //获取列表
@@ -189,7 +193,19 @@ func (mf *Mfinder) Run() {
 			if len(v1) == 0 {
 				continue
 			}
-			fmt.Println("\t\t", v1)
+			fmt.Print("\t\t", v1)
+			if mf.showMore {
+				fileInfo, err := os.Stat(v1)
+				if err == nil {
+					fmt.Print("\t", fileInfo.Size()/KbToByte, "k")
+					if fileInfo.IsDir() {
+						fmt.Print("\t", "dir")
+					} else {
+						fmt.Print("\t", "not dir")
+					}
+				}
+			}
+			fmt.Println()
 			strList = append(strList, v1)
 		}
 	}

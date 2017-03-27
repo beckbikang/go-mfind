@@ -11,6 +11,7 @@ import (
 
 var Usage = func() {
 	fmt.Println("Usage of mfind:")
+	fmt.Println("\t-a\n\t\tshow more info")
 	fmt.Println("\t-filename string\n\t\tfile name")
 	fmt.Println("\t-path string\n\t\tdir path")
 	fmt.Println("\t-isfile int\n\t\twhich type fild 0 all 1 file  2 dir")
@@ -42,6 +43,10 @@ func main() {
 	flag.StringVar(&fileSize, "size", "", "file size like +10m +100 -10M -100")
 	fileSize = strings.ToLower(strings.Trim(fileSize, " "))
 
+	//显示更多信息
+	var showMore bool
+	flag.BoolVar(&showMore, "a", false, "show more info")
+
 	flag.Parse()
 	fmt.Printf("\n#########we will find %s  from %s#########\n\n", filename, dirpath)
 	if len(dirpath) > 0 {
@@ -49,6 +54,8 @@ func main() {
 		mf.IsOnlyFindType = isOnlyFindType
 		//设置大小
 		mf.SetFileSize(fileSize)
+		//显示更多
+		mf.SetShowMore(showMore)
 		mf.Run()
 	} else {
 		Usage()
